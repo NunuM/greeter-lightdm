@@ -3,17 +3,16 @@
 
 #include <QObject>
 #include <QQuickItem>
-#include <QWidget>
 
 class PasswordInput : public QObject
 {
     Q_OBJECT
 public:
-    explicit PasswordInput(QObject *parent = nullptr);
 
 signals:
 
 public slots:
+    void cppSlot(const QString &msg);
 };
 
 #endif // PASSWORDINPUT_H

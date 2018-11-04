@@ -1,6 +1,6 @@
 #include "passwordinput.h"
 
-PasswordInput::PasswordInput(QObject *parent) : QObject(parent)
-{
 
+void PasswordInput::cppSlot(const QString &msg){
+    qDebug() << "Property value:" << msg;
 }

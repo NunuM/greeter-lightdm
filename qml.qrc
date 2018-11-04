@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
+        <file>LoginFormComponent.qml</file>
+        <file>LoginFormComponentForm.ui.qml</file>
     </qresource>
 </RCC>
