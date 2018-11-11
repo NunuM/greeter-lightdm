@@ -14,7 +14,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-    passwordinput.cpp
+    passwordinput.cpp \
+    authenticatormanager.cpp \
+    usernameinput.cpp \
+    keyhandler.cpp
 
 RESOURCES += qml.qrc
 
@@ -35,4 +38,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    passwordinput.h
+    passwordinput.h \
+    authenticatormanager.h \
+    usernameinput.h \
+    keyhandler.h

@@ -1,18 +1,34 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
-#include "passwordinput.h"
-#include <QLightDM/Greeter>
 #include <QQuickStyle>
+
+#include <QLightDM/Greeter>
 #include <QLightDM/Power>
 #include <QLightDM/UsersModel>
 
+#include "passwordinput.h"
+#include "usernameinput.h"
+#include "authenticatormanager.h"
+#include "keyhandler.h"
+
+#define MZ_PASSWORD_INPUT "passwordInputForm"
+#define MZ_USERNAME_INPUT "usernameInputForm"
+#define MZ_USER_IMAGE_INPUT "userImageInputForm"
+#define MZ_ARROW_KEYS_INPUT "arrowKeysInput"
+
+
 int main(int argc, char *argv[])
 {
+    QLightDM::Greeter greeter;
+    QLightDM::UsersModel users;
+    int currentUser = 0;
+    const int totalUsers = users.rowCount(QModelIndex());
 
-    PasswordInput myClass;
+    PasswordInput passwordInput;
+    UsernameInput usernameInput;
+    AuthenticatorManager authManager(greeter,passwordInput,usernameInput);
 
     QQuickStyle::setStyle("Material");
-
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, argv);
@@ -22,24 +38,16 @@ int main(int argc, char *argv[])
     if (engine.rootObjects().isEmpty())
         return -1;
 
-    QObject * myObject = engine.rootObjects().value(0)->findChild<QObject*>("passwordForm");
-    QObject * usernameObj = engine.rootObjects().value(0)->findChild<QObject*>("username");
+    QObject * passwordInputObject = engine.rootObjects().value(0)->findChild<QObject*>(MZ_PASSWORD_INPUT);
+    QObject * usernameInputObject = engine.rootObjects().value(0)->findChild<QObject*>(MZ_USERNAME_INPUT);
+    QObject * userImageObject = engine.rootObjects().value(0)->findChild<QObject*>(MZ_USER_IMAGE_INPUT);
+    QObject * arrowKeysdObject = engine.rootObjects().value(0)->findChild<QObject*>(MZ_ARROW_KEYS_INPUT);
 
-    QLightDM::UsersModel pr;
+    keyhandler key(passwordInputObject,usernameInputObject,userImageObject,&users,currentUser,totalUsers);
 
-    auto e = pr.data(pr.index(0,0), QLightDM::UsersModel::NameRole);
-
-    auto hello = e.toString().toUpper();
-
-    QVariant v(hello);
-
-    usernameObj->setProperty("text",v);
-
-     auto ee = pr.data(pr.index(0,0), QLightDM::UsersModel::ImagePathRole);
-
-    qDebug() << "---" << ee.toString();
-
-    QObject::connect(myObject,SIGNAL(validatePassword(QString)), &myClass, SLOT(cppSlot(QString)));
+    QObject::connect(passwordInputObject,SIGNAL(setPassword(QString)), &passwordInput, SLOT(setPassword(QString)));
+    QObject::connect(arrowKeysdObject, SIGNAL(pushedRight()), &key, SLOT(pushedRight()));
+    QObject::connect(arrowKeysdObject, SIGNAL(pushedLeft()), &key, SLOT(pushedLeft()));
 
     return app.exec();
 }

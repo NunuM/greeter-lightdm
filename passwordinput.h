@@ -3,16 +3,20 @@
 
 #include <QObject>
 #include <QQuickItem>
+#include <QString>
 
 class PasswordInput : public QObject
 {
     Q_OBJECT
 public:
-
+    PasswordInput();
 signals:
 
 public slots:
-    void cppSlot(const QString &msg);
+    void setPassword(const QString &password);
+    QString getPassword();
+private:
+    QString m_password;
 };
 
 #endif // PASSWORDINPUT_H

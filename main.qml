@@ -3,6 +3,7 @@ import QtQuick.Controls 2.1
 import QtQuick.Controls.Material 2.1
 
 ApplicationWindow  {
+    id: gretter
     visible: true
     width: 1000
     height: 700
@@ -10,39 +11,45 @@ ApplicationWindow  {
     Material.accent: Material.Purple
     opacity: 2
 
-    Column {
-        id: infoform
+
+    Item{
+        id:body
         anchors.centerIn: parent
+        Column {
+            id: infoform
+            anchors.centerIn: parent
 
-        Pane{
-            width: 400
-            height: 200
-            Material.elevation: 10
+            Pane{
+                id:userInfo
+                width: 400
+                height: 200
+                Material.elevation: 10
 
-            Text {
-                color: "#9E9E9E"
-                objectName: "username"
-                anchors.verticalCenter: image.verticalCenter
-                font.pixelSize: 32
-            }
+                Text {
+                    color: "#9E9E9E"
+                    objectName: "usernameInputForm"
+                    anchors.verticalCenter: image.verticalCenter
+                    font.pixelSize: 32
+                }
 
-            Image {
-                id: image
-                source: "file:///var/lib/AccountsService/icons/nuno"
-                property bool rounded: true
-                property bool adapt: true
+                Image {
+                    id: image
+                    objectName: "userImageInputForm"
+                    source: "file:///home/nuno/greeter/assets/social/drawable-hdpi/ic_person_white_48dp.png"
+                    property bool rounded: true
+                    property bool adapt: true
 
-                width: 96
-                height: 96
-                anchors.right: parent.right
-                z:-999
+                    width: 96
+                    height: 96
+                    anchors.right: parent.right
+                    z:-999
 
-                layer.enabled: rounded
-                layer.effect: ShaderEffect {
-                    property real adjustX: image.adapt ? Math.max(width / height, 1) : 1
-                    property real adjustY: image.adapt ? Math.max(1 / (width / height), 1) : 1
+                    layer.enabled: rounded
+                    layer.effect: ShaderEffect {
+                        property real adjustX: image.adapt ? Math.max(width / height, 1) : 1
+                        property real adjustY: image.adapt ? Math.max(1 / (width / height), 1) : 1
 
-                    fragmentShader: "
+                        fragmentShader: "
                 #ifdef GL_ES
                     precision lowp float;
                 #endif // GL_ES
@@ -62,14 +69,36 @@ ApplicationWindow  {
                         * smoothstep((x * x + y * y) , 0.25 + delta, 0.25)
                         * qt_Opacity;
                 }"
+                    }
                 }
-            }
 
-            LoginFormComponent{
-                widgetWidth: parent.width
-                widgetHeight: 100
-                anchors.bottom: parent.bottom
-                z: 2
+                PasswordFormComponent{
+                    id:textBox
+                    widgetWidth: parent.width
+                    widgetHeight: 100
+                    anchors.bottom: parent.bottom
+                }
+
+                Item{
+                    id: arrows
+                    objectName: "arrowKeysInput"
+                    signal pushedRight()
+                    signal pushedLeft()
+
+                    anchors.top: textBox.bottom
+                    anchors.centerIn: userInfo
+                    Row{
+                        spacing: 2
+                        Button {
+                            text: "<"
+                            onClicked: arrows.pushedLeft()
+                        }
+                        Button {
+                            text: ">"
+                            onClicked: arrows.pushedRight()
+                        }
+                    }
+                }
             }
         }
     }
